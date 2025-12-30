@@ -588,25 +588,36 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const calculateBtn = document.getElementById('calculate-btn');
-            const resultsContainer = document.getElementById('results-container');
-            const recommendation = document.getElementById('recommendation');
-            const recommendationText = document.getElementById('recommendation-text');
-            const discountRadios = document.querySelectorAll('input[name="discount"]');
-            const customDiscountContainer = document.getElementById('custom-discount-container');
-            const customDiscountInput = document.getElementById('custom-discount');
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            const addMonthBtn = document.getElementById('add-month-btn');
-            const monthsContainer = document.getElementById('months-container');
-            const summaryStats = document.getElementById('summary-stats');
-            const avgMonthlyCostEl = document.getElementById('avg-monthly-cost');
-            const annualRideCostEl = document.getElementById('annual-ride-cost');
-            const annualNoCardCostEl = document.getElementById('annual-no-card-cost');
+        // 使用更兼容的加载方式
+        window.onload = function() {
+            console.log("页面加载完成，开始初始化...");
+            
+            // 获取DOM元素（添加空值检查）
+            var calculateBtn = document.getElementById('calculate-btn');
+            var resultsContainer = document.getElementById('results-container');
+            var recommendation = document.getElementById('recommendation');
+            var recommendationText = document.getElementById('recommendation-text');
+            var discountRadios = document.querySelectorAll('input[name="discount"]');
+            var customDiscountContainer = document.getElementById('custom-discount-container');
+            var customDiscountInput = document.getElementById('custom-discount');
+            var tabBtns = document.querySelectorAll('.tab-btn');
+            var tabContents = document.querySelectorAll('.tab-content');
+            var addMonthBtn = document.getElementById('add-month-btn');
+            var monthsContainer = document.getElementById('months-container');
+            var summaryStats = document.getElementById('summary-stats');
+            var avgMonthlyCostEl = document.getElementById('avg-monthly-cost');
+            var annualRideCostEl = document.getElementById('annual-ride-cost');
+            var annualNoCardCostEl = document.getElementById('annual-no-card-cost');
+            
+            // 检查必要元素是否存在
+            if (!calculateBtn) {
+                console.error("错误：找不到计算按钮");
+                alert("页面加载错误，请刷新重试");
+                return;
+            }
             
             // 卡种数据
-            const cardTypes = [
+            var cardTypes = [
                 { id: 'year-card', name: '地铁公交年卡', price: 1200, gift: 1200, total: 2400, days: 365 },
                 { id: 'quarter-card', name: '地铁公交季卡', price: 410, gift: 270, total: 680, days: 90 },
                 { id: 'month-card', name: '地铁公交月卡', price: 160, gift: 70, total: 230, days: 30 },
@@ -615,56 +626,72 @@
             ];
             
             // 月份名称
-            const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+            var monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
             
             // 标签页切换
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
+            for (var i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].addEventListener('click', function() {
+                    var tabId = this.getAttribute('data-tab');
                     
                     // 移除所有active类
-                    tabBtns.forEach(b => b.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
+                    for (var j = 0; j < tabBtns.length; j++) {
+                        tabBtns[j].classList.remove('active');
+                    }
+                    for (var k = 0; k < tabContents.length; k++) {
+                        tabContents[k].classList.remove('active');
+                    }
                     
                     // 添加active类到当前标签
                     this.classList.add('active');
-                    document.getElementById(tabId).classList.add('active');
+                    var tabContent = document.getElementById(tabId);
+                    if (tabContent) {
+                        tabContent.classList.add('active');
+                    }
                 });
-            });
+            }
             
             // 添加月份输入框
-            addMonthBtn.addEventListener('click', function() {
-                const currentRows = monthsContainer.querySelectorAll('.month-input-row');
-                if (currentRows.length >= 12) {
-                    alert('最多只能添加12个月份');
-                    return;
-                }
-                
-                const monthIndex = currentRows.length;
-                const monthName = monthNames[monthIndex] || (monthIndex + 1) + '月';
-                
-                const row = document.createElement('div');
-                row.className = 'month-input-row';
-                row.innerHTML = `
-                    <span class="month-label">${monthName}：</span>
-                    <input type="number" class="month-input" min="0" step="10" value="300" placeholder="${monthName}乘车费用">
-                    <button type="button" class="remove-month-btn">删除</button>
-                `;
-                
-                monthsContainer.appendChild(row);
-                
-                // 添加删除按钮事件
-                row.querySelector('.remove-month-btn').addEventListener('click', function() {
-                    row.remove();
+            if (addMonthBtn) {
+                addMonthBtn.addEventListener('click', function() {
+                    var currentRows = monthsContainer.querySelectorAll('.month-input-row');
+                    if (currentRows.length >= 12) {
+                        alert('最多只能添加12个月份');
+                        return;
+                    }
+                    
+                    var monthIndex = currentRows.length;
+                    var monthName = monthNames[monthIndex] || (monthIndex + 1) + '月';
+                    
+                    var row = document.createElement('div');
+                    row.className = 'month-input-row';
+                    row.innerHTML = '\
+                        <span class="month-label">' + monthName + '：</span>\
+                        <input type="number" class="month-input" min="0" step="10" value="300" placeholder="' + monthName + '乘车费用">\
+                        <button type="button" class="remove-month-btn">删除</button>\
+                    ';
+                    
+                    monthsContainer.appendChild(row);
+                    
+                    // 添加删除按钮事件
+                    var removeBtn = row.querySelector('.remove-month-btn');
+                    if (removeBtn) {
+                        removeBtn.addEventListener('click', function() {
+                            row.remove();
+                        });
+                    }
                 });
-            });
+            }
             
             // 获取原卡折扣率
             function getOriginalDiscount() {
-                const selectedDiscount = document.querySelector('input[name="discount"]:checked');
+                var selectedDiscount = document.querySelector('input[name="discount"]:checked');
+                
+                if (!selectedDiscount) {
+                    return 0.8; // 默认值
+                }
                 
                 if (selectedDiscount.value === 'custom') {
-                    const customValue = parseFloat(customDiscountInput.value);
+                    var customValue = parseFloat(customDiscountInput.value);
                     // 验证自定义折扣
                     if (isNaN(customValue) || customValue <= 0 || customValue > 1) {
                         alert('请输入有效的折扣率（0-1之间，如0.8表示8折）');
@@ -677,20 +704,20 @@
             }
             
             // 切换自定义折扣输入框显示
-            discountRadios.forEach(radio => {
-                radio.addEventListener('change', function() {
+            for (var i = 0; i < discountRadios.length; i++) {
+                discountRadios[i].addEventListener('change', function() {
                     if (this.value === 'custom') {
                         customDiscountContainer.style.display = 'block';
                     } else {
                         customDiscountContainer.style.display = 'none';
                     }
                 });
-            });
+            }
             
             // 计算不购卡情况下的月度费用
             function calculateNoCardCost(monthlyCost, originalDiscount) {
                 // 根据新优惠政策计算
-                let totalCost = 0;
+                var totalCost = 0;
                 
                 if (monthlyCost <= 80) {
                     totalCost = monthlyCost * originalDiscount;
@@ -711,10 +738,10 @@
             // 计算购卡情况下的月度费用
             function calculateCardCost(monthlyCost, card, originalDiscount) {
                 // 计算卡的有效期覆盖的月数
-                const monthsCovered = card.days / 30.44; // 平均每月天数
+                var monthsCovered = card.days / 30.44; // 平均每月天数
                 
                 // 计算卡的有效期内总乘车费用
-                const totalRideCost = monthlyCost * monthsCovered;
+                var totalRideCost = monthlyCost * monthsCovered;
                 
                 // 如果购卡金额足够覆盖乘车费用
                 if (card.total >= totalRideCost) {
@@ -722,9 +749,9 @@
                     return card.price / monthsCovered;
                 } else {
                     // 需要支付卡的费用 + 超出部分的乘车费用（按不购卡计算）
-                    const extraCost = totalRideCost - card.total;
-                    const extraMonthlyCost = extraCost / monthsCovered;
-                    const extraCostWithDiscount = calculateNoCardCost(extraMonthlyCost, originalDiscount);
+                    var extraCost = totalRideCost - card.total;
+                    var extraMonthlyCost = extraCost / monthsCovered;
+                    var extraCostWithDiscount = calculateNoCardCost(extraMonthlyCost, originalDiscount);
                     
                     return (card.price / monthsCovered) + extraCostWithDiscount;
                 }
@@ -732,26 +759,36 @@
             
             // 获取每月费用数组
             function getMonthlyCosts() {
-                const activeTab = document.querySelector('.tab-content.active').id;
+                var activeTab = document.querySelector('.tab-content.active');
+                if (!activeTab) return [];
                 
-                if (activeTab === 'average-tab') {
-                    const avgCost = parseFloat(document.getElementById('monthly-cost').value);
+                var activeTabId = activeTab.id;
+                
+                if (activeTabId === 'average-tab') {
+                    var avgCostInput = document.getElementById('monthly-cost');
+                    if (!avgCostInput) return [];
+                    
+                    var avgCost = parseFloat(avgCostInput.value);
                     if (isNaN(avgCost) || avgCost < 0) {
                         return [];
                     }
                     // 返回12个月相同的平均费用
-                    return Array(12).fill(avgCost);
+                    var costs = [];
+                    for (var i = 0; i < 12; i++) {
+                        costs.push(avgCost);
+                    }
+                    return costs;
                 } else {
                     // 实际每月费用模式
-                    const monthInputs = monthsContainer.querySelectorAll('.month-input');
-                    const costs = [];
+                    var monthInputs = monthsContainer.querySelectorAll('.month-input');
+                    var costs = [];
                     
-                    monthInputs.forEach(input => {
-                        const cost = parseFloat(input.value);
+                    for (var i = 0; i < monthInputs.length; i++) {
+                        var cost = parseFloat(monthInputs[i].value);
                         if (!isNaN(cost) && cost >= 0) {
                             costs.push(cost);
                         }
-                    });
+                    }
                     
                     return costs;
                 }
@@ -769,20 +806,26 @@
             
             // 计算并显示结果
             function calculateAndDisplay() {
-                const monthlyCosts = getMonthlyCosts();
+                console.log("开始计算...");
+                
+                var monthlyCosts = getMonthlyCosts();
                 
                 if (monthlyCosts.length === 0) {
                     alert('请输入有效的每月乘车费用');
                     return;
                 }
                 
-                const originalDiscount = getOriginalDiscount();
+                var originalDiscount = getOriginalDiscount();
                 
                 // 获取选中的卡种
-                const selectedCards = cardTypes.filter(card => {
-                    const checkbox = document.getElementById(card.id);
-                    return checkbox.checked;
-                });
+                var selectedCards = [];
+                for (var i = 0; i < cardTypes.length; i++) {
+                    var card = cardTypes[i];
+                    var checkbox = document.getElementById(card.id);
+                    if (checkbox && checkbox.checked) {
+                        selectedCards.push(card);
+                    }
+                }
                 
                 if (selectedCards.length === 0) {
                     alert('请至少选择一个购卡方案进行比较');
@@ -790,46 +833,54 @@
                 }
                 
                 // 计算统计数据
-                const totalRideCost = monthlyCosts.reduce((sum, cost) => sum + cost, 0);
-                const avgMonthlyCost = totalRideCost / monthlyCosts.length;
-                const monthsCount = monthlyCosts.length;
+                var totalRideCost = 0;
+                for (var i = 0; i < monthlyCosts.length; i++) {
+                    totalRideCost += monthlyCosts[i];
+                }
+                
+                var avgMonthlyCost = totalRideCost / monthlyCosts.length;
+                var monthsCount = monthlyCosts.length;
                 
                 // 计算不购卡的总花费（基准）
-                let totalNoCardCost = 0;
-                monthlyCosts.forEach(cost => {
-                    totalNoCardCost += calculateNoCardCost(cost, originalDiscount);
-                });
+                var totalNoCardCost = 0;
+                for (var i = 0; i < monthlyCosts.length; i++) {
+                    totalNoCardCost += calculateNoCardCost(monthlyCosts[i], originalDiscount);
+                }
                 
-                const avgNoCardCost = totalNoCardCost / monthsCount;
-                const annualNoCardCost = avgNoCardCost * 12;
+                var avgNoCardCost = totalNoCardCost / monthsCount;
+                var annualNoCardCost = avgNoCardCost * 12;
                 
                 // 显示统计数据
-                summaryStats.style.display = 'grid';
-                avgMonthlyCostEl.textContent = formatCurrency(avgMonthlyCost);
-                annualRideCostEl.textContent = formatCurrency(avgMonthlyCost * 12);
-                annualNoCardCostEl.textContent = formatCurrency(annualNoCardCost);
+                if (summaryStats) {
+                    summaryStats.style.display = 'grid';
+                    if (avgMonthlyCostEl) avgMonthlyCostEl.textContent = formatCurrency(avgMonthlyCost);
+                    if (annualRideCostEl) annualRideCostEl.textContent = formatCurrency(avgMonthlyCost * 12);
+                    if (annualNoCardCostEl) annualNoCardCostEl.textContent = formatCurrency(annualNoCardCost);
+                }
                 
                 // 计算每种卡的总费用
-                const cardResults = selectedCards.map(card => {
+                var cardResults = [];
+                for (var i = 0; i < selectedCards.length; i++) {
+                    var card = selectedCards[i];
                     // 使用平均每月费用计算
-                    const avgMonthlyCardCost = calculateCardCost(avgMonthlyCost, card, originalDiscount);
-                    const totalCardCost = avgMonthlyCardCost * monthsCount;
-                    const annualCardCost = avgMonthlyCardCost * 12;
-                    const monthlySavings = avgNoCardCost - avgMonthlyCardCost;
-                    const annualSavings = annualNoCardCost - annualCardCost;
+                    var avgMonthlyCardCost = calculateCardCost(avgMonthlyCost, card, originalDiscount);
+                    var totalCardCost = avgMonthlyCardCost * monthsCount;
+                    var annualCardCost = avgMonthlyCardCost * 12;
+                    var monthlySavings = avgNoCardCost - avgMonthlyCardCost;
+                    var annualSavings = annualNoCardCost - annualCardCost;
                     
-                    return {
-                        card,
+                    cardResults.push({
+                        card: card,
                         avgMonthlyCost: avgMonthlyCardCost,
                         annualCost: annualCardCost,
-                        monthlySavings,
-                        annualSavings,
+                        monthlySavings: monthlySavings,
+                        annualSavings: annualSavings,
                         isBest: false
-                    };
-                });
+                    });
+                }
                 
                 // 创建所有选项的数组（包括不购卡）
-                const allOptions = [
+                var allOptions = [
                     {
                         type: 'no-card',
                         name: '基准：不购卡（使用原卡）',
@@ -838,191 +889,217 @@
                         monthlySavings: 0,
                         annualSavings: 0,
                         isBest: false
-                    },
-                    ...cardResults
+                    }
                 ];
                 
+                // 添加购卡方案
+                for (var i = 0; i < cardResults.length; i++) {
+                    allOptions.push(cardResults[i]);
+                }
+                
                 // 找出最划算的方案（月度费用最低）
-                const bestOption = allOptions.reduce((prev, current) => 
-                    prev.avgMonthlyCost < current.avgMonthlyCost ? prev : current
-                );
+                var bestOption = allOptions[0];
+                for (var i = 1; i < allOptions.length; i++) {
+                    if (allOptions[i].avgMonthlyCost < bestOption.avgMonthlyCost) {
+                        bestOption = allOptions[i];
+                    }
+                }
                 bestOption.isBest = true;
                 
                 // 显示结果
-                resultsContainer.innerHTML = '';
-                
-                // 显示当前设置
-                const settingsDiv = document.createElement('div');
-                settingsDiv.className = 'result-item';
-                const inputMode = document.querySelector('.tab-btn.active').textContent;
-                settingsDiv.innerHTML = `
-                    <div class="card-name">当前计算设置</div>
-                    <div class="cost-info">
-                        <span class="cost-label">输入模式：</span>
-                        <span class="cost-value">${inputMode}</span>
-                    </div>
-                    <div class="cost-info">
-                        <span class="cost-label">分析月份数：</span>
-                        <span class="cost-value">${monthsCount}个月</span>
-                    </div>
-                    <div class="cost-info">
-                        <span class="cost-label">原卡折扣率：</span>
-                        <span class="cost-value">${formatDiscount(originalDiscount)}</span>
-                    </div>
-                `;
-                resultsContainer.appendChild(settingsDiv);
-                
-                // 显示所有选项
-                allOptions.forEach(option => {
-                    const isBaseline = option.type === 'no-card';
-                    const isBest = option.isBest;
+                if (resultsContainer) {
+                    resultsContainer.innerHTML = '';
                     
-                    const resultItem = document.createElement('div');
-                    resultItem.className = `result-item ${isBaseline ? 'baseline' : ''} ${isBest ? 'best' : ''}`;
+                    // 显示当前设置
+                    var settingsDiv = document.createElement('div');
+                    settingsDiv.className = 'result-item';
+                    var inputMode = document.querySelector('.tab-btn.active');
+                    var inputModeText = inputMode ? inputMode.textContent : '平均每月费用';
+                    settingsDiv.innerHTML = '\
+                        <div class="card-name">当前计算设置</div>\
+                        <div class="cost-info">\
+                            <span class="cost-label">输入模式：</span>\
+                            <span class="cost-value">' + inputModeText + '</span>\
+                        </div>\
+                        <div class="cost-info">\
+                            <span class="cost-label">分析月份数：</span>\
+                            <span class="cost-value">' + monthsCount + '个月</span>\
+                        </div>\
+                        <div class="cost-info">\
+                            <span class="cost-label">原卡折扣率：</span>\
+                            <span class="cost-value">' + formatDiscount(originalDiscount) + '</span>\
+                        </div>\
+                    ';
+                    resultsContainer.appendChild(settingsDiv);
                     
-                    const cardName = document.createElement('div');
-                    cardName.className = 'card-name';
-                    cardName.textContent = option.name + (isBest ? ' ★ 最划算' : '');
-                    
-                    const costInfo1 = document.createElement('div');
-                    costInfo1.className = 'cost-info';
-                    costInfo1.innerHTML = `
-                        <span class="cost-label">平均月度费用：</span>
-                        <span class="cost-value">${formatCurrency(option.avgMonthlyCost)}</span>
-                    `;
-                    
-                    const costInfo2 = document.createElement('div');
-                    costInfo2.className = 'cost-info';
-                    costInfo2.innerHTML = `
-                        <span class="cost-label">年度总费用：</span>
-                        <span class="cost-value">${formatCurrency(option.annualCost)}</span>
-                    `;
-                    
-                    // 对于不购卡，不显示节省/多花
-                    if (!isBaseline) {
-                        const monthlySavingsClass = option.monthlySavings > 0 ? 'savings' : 'loss';
-                        const monthlySavingsText = option.monthlySavings > 0 ? '节省' : '多花';
-                        const monthlySavingsValue = Math.abs(option.monthlySavings);
+                    // 显示所有选项
+                    for (var i = 0; i < allOptions.length; i++) {
+                        var option = allOptions[i];
+                        var isBaseline = option.type === 'no-card';
+                        var isBest = option.isBest;
                         
-                        const costInfo3 = document.createElement('div');
-                        costInfo3.className = 'cost-info';
-                        costInfo3.innerHTML = `
-                            <span class="cost-label">月均相比基准：</span>
-                            <span class="cost-value ${monthlySavingsClass}">${monthlySavingsText} ${formatCurrency(monthlySavingsValue)}</span>
-                        `;
+                        var resultItem = document.createElement('div');
+                        resultItem.className = 'result-item';
+                        if (isBaseline) resultItem.className += ' baseline';
+                        if (isBest) resultItem.className += ' best';
                         
-                        const annualSavingsClass = option.annualSavings > 0 ? 'savings' : 'loss';
-                        const annualSavingsText = option.annualSavings > 0 ? '节省' : '多花';
-                        const annualSavingsValue = Math.abs(option.annualSavings);
+                        var cardName = document.createElement('div');
+                        cardName.className = 'card-name';
+                        cardName.textContent = option.name + (isBest ? ' ★ 最划算' : '');
                         
-                        const costInfo4 = document.createElement('div');
-                        costInfo4.className = 'cost-info annual-savings';
-                        costInfo4.innerHTML = `
-                            <span class="cost-label">年度相比基准：</span>
-                            <span class="cost-value ${annualSavingsClass}">${annualSavingsText} ${formatCurrency(annualSavingsValue)}</span>
-                        `;
+                        var costInfo1 = document.createElement('div');
+                        costInfo1.className = 'cost-info';
+                        costInfo1.innerHTML = '\
+                            <span class="cost-label">平均月度费用：</span>\
+                            <span class="cost-value">' + formatCurrency(option.avgMonthlyCost) + '</span>\
+                        ';
                         
-                        resultItem.appendChild(costInfo3);
-                        resultItem.appendChild(costInfo4);
-                    } else {
-                        const costInfo3 = document.createElement('div');
-                        costInfo3.className = 'cost-info';
-                        costInfo3.innerHTML = `
-                            <span class="cost-label">说明：</span>
-                            <span class="cost-value">所有购卡方案将与基准进行对比</span>
-                        `;
-                        resultItem.appendChild(costInfo3);
+                        var costInfo2 = document.createElement('div');
+                        costInfo2.className = 'cost-info';
+                        costInfo2.innerHTML = '\
+                            <span class="cost-label">年度总费用：</span>\
+                            <span class="cost-value">' + formatCurrency(option.annualCost) + '</span>\
+                        ';
+                        
+                        resultItem.appendChild(cardName);
+                        resultItem.appendChild(costInfo1);
+                        resultItem.appendChild(costInfo2);
+                        
+                        // 对于不购卡，不显示节省/多花
+                        if (!isBaseline) {
+                            var monthlySavingsClass = option.monthlySavings > 0 ? 'savings' : 'loss';
+                            var monthlySavingsText = option.monthlySavings > 0 ? '节省' : '多花';
+                            var monthlySavingsValue = Math.abs(option.monthlySavings);
+                            
+                            var costInfo3 = document.createElement('div');
+                            costInfo3.className = 'cost-info';
+                            costInfo3.innerHTML = '\
+                                <span class="cost-label">月均相比基准：</span>\
+                                <span class="cost-value ' + monthlySavingsClass + '">' + monthlySavingsText + ' ' + formatCurrency(monthlySavingsValue) + '</span>\
+                            ';
+                            
+                            var annualSavingsClass = option.annualSavings > 0 ? 'savings' : 'loss';
+                            var annualSavingsText = option.annualSavings > 0 ? '节省' : '多花';
+                            var annualSavingsValue = Math.abs(option.annualSavings);
+                            
+                            var costInfo4 = document.createElement('div');
+                            costInfo4.className = 'cost-info annual-savings';
+                            costInfo4.innerHTML = '\
+                                <span class="cost-label">年度相比基准：</span>\
+                                <span class="cost-value ' + annualSavingsClass + '">' + annualSavingsText + ' ' + formatCurrency(annualSavingsValue) + '</span>\
+                            ';
+                            
+                            resultItem.appendChild(costInfo3);
+                            resultItem.appendChild(costInfo4);
+                            
+                            // 显示卡详情
+                            var cardDetails = '\
+                                <div class="cost-info">\
+                                    <span class="cost-label">购卡价格：</span>\
+                                    <span class="cost-value">' + formatCurrency(option.card.price) + '</span>\
+                                </div>\
+                                <div class="cost-info">\
+                                    <span class="cost-label">赠送金额：</span>\
+                                    <span class="cost-value">' + formatCurrency(option.card.gift) + '</span>\
+                                </div>\
+                                <div class="cost-info">\
+                                    <span class="cost-label">可用总额：</span>\
+                                    <span class="cost-value">' + formatCurrency(option.card.total) + '</span>\
+                                </div>\
+                                <div class="cost-info">\
+                                    <span class="cost-label">有效期：</span>\
+                                    <span class="cost-value">' + option.card.days + '天</span>\
+                                </div>\
+                            ';
+                            
+                            var detailsDiv = document.createElement('div');
+                            detailsDiv.style.marginTop = '10px';
+                            detailsDiv.innerHTML = cardDetails;
+                            resultItem.appendChild(detailsDiv);
+                        } else {
+                            var costInfo3 = document.createElement('div');
+                            costInfo3.className = 'cost-info';
+                            costInfo3.innerHTML = '\
+                                <span class="cost-label">说明：</span>\
+                                <span class="cost-value">所有购卡方案将与基准进行对比</span>\
+                            ';
+                            resultItem.appendChild(costInfo3);
+                        }
+                        
+                        resultsContainer.appendChild(resultItem);
                     }
-                    
-                    // 如果是购卡，显示卡详情
-                    if (!isBaseline) {
-                        const cardDetails = `
-                            <div class="cost-info">
-                                <span class="cost-label">购卡价格：</span>
-                                <span class="cost-value">${formatCurrency(option.card.price)}</span>
-                            </div>
-                            <div class="cost-info">
-                                <span class="cost-label">赠送金额：</span>
-                                <span class="cost-value">${formatCurrency(option.card.gift)}</span>
-                            </div>
-                            <div class="cost-info">
-                                <span class="cost-label">可用总额：</span>
-                                <span class="cost-value">${formatCurrency(option.card.total)}</span>
-                            </div>
-                            <div class="cost-info">
-                                <span class="cost-label">有效期：</span>
-                                <span class="cost-value">${option.card.days}天</span>
-                            </div>
-                        `;
-                        
-                        const detailsDiv = document.createElement('div');
-                        detailsDiv.style.marginTop = '10px';
-                        detailsDiv.innerHTML = cardDetails;
-                        resultItem.appendChild(detailsDiv);
-                    }
-                    
-                    resultItem.appendChild(cardName);
-                    resultItem.appendChild(costInfo1);
-                    resultItem.appendChild(costInfo2);
-                    
-                    resultsContainer.appendChild(resultItem);
-                });
-                
-                // 显示推荐
-                recommendation.style.display = 'block';
-                
-                if (bestOption.type === 'no-card') {
-                    recommendationText.innerHTML = `
-                        根据您${monthsCount}个月的乘车费用分析（平均每月${formatCurrency(avgMonthlyCost)}元）和${formatDiscount(originalDiscount)}的原卡折扣：<br><br>
-                        <strong>不购卡（使用原卡）是最划算的方案！</strong><br>
-                        • 平均每月花费：${formatCurrency(avgNoCardCost)}元<br>
-                        • 年度总花费：${formatCurrency(annualNoCardCost)}元<br><br>
-                        所有购卡方案都不如不购卡划算，建议继续使用原卡，享受阶梯优惠政策。
-                    `;
-                } else if (bestOption.annualSavings > 0) {
-                    recommendationText.innerHTML = `
-                        根据您${monthsCount}个月的乘车费用分析（平均每月${formatCurrency(avgMonthlyCost)}元）和${formatDiscount(originalDiscount)}的原卡折扣：<br><br>
-                        <strong>推荐选择${bestOption.card.name}</strong><br>
-                        • 平均每月花费：${formatCurrency(bestOption.avgMonthlyCost)}元<br>
-                        • 相比不购卡每月节省：${formatCurrency(bestOption.monthlySavings)}元<br>
-                        • <strong>每年可节省：${formatCurrency(bestOption.annualSavings)}元</strong>
-                    `;
-                } else if (bestOption.annualSavings < 0) {
-                    recommendationText.innerHTML = `
-                        根据您${monthsCount}个月的乘车费用分析（平均每月${formatCurrency(avgMonthlyCost)}元）和${formatDiscount(originalDiscount)}的原卡折扣：<br><br>
-                        <strong>${bestOption.card.name}是最佳购卡方案，但：</strong><br>
-                        • 平均每月花费：${formatCurrency(bestOption.avgMonthlyCost)}元<br>
-                        • 相比不购卡每月多花：${formatCurrency(-bestOption.monthlySavings)}元<br>
-                        • <strong>每年会多花费：${formatCurrency(-bestOption.annualSavings)}元</strong><br><br>
-                        所有购卡方案都不如不购卡划算，建议继续使用原卡。
-                    `;
-                } else {
-                    recommendationText.innerHTML = `
-                        根据您${monthsCount}个月的乘车费用分析（平均每月${formatCurrency(avgMonthlyCost)}元）和${formatDiscount(originalDiscount)}的原卡折扣：<br><br>
-                        <strong>${bestOption.card.name}与不购卡花费相同。</strong><br>
-                        • 平均每月花费：${formatCurrency(bestOption.avgMonthlyCost)}元<br>
-                        • 年度总花费：${formatCurrency(bestOption.annualCost)}元<br><br>
-                        购卡与不购卡花费相同，可根据个人便利性选择。
-                    `;
                 }
                 
-                // 滚动到结果区域
-                resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                // 显示推荐
+                if (recommendation) {
+                    recommendation.style.display = 'block';
+                    
+                    var recommendationHTML = '';
+                    if (bestOption.type === 'no-card') {
+                        recommendationHTML = '\
+                            根据您' + monthsCount + '个月的乘车费用分析（平均每月' + formatCurrency(avgMonthlyCost) + '元）和' + formatDiscount(originalDiscount) + '的原卡折扣：<br><br>\
+                            <strong>不购卡（使用原卡）是最划算的方案！</strong><br>\
+                            • 平均每月花费：' + formatCurrency(avgNoCardCost) + '元<br>\
+                            • 年度总花费：' + formatCurrency(annualNoCardCost) + '元<br><br>\
+                            所有购卡方案都不如不购卡划算，建议继续使用原卡，享受阶梯优惠政策。\
+                        ';
+                    } else if (bestOption.annualSavings > 0) {
+                        recommendationHTML = '\
+                            根据您' + monthsCount + '个月的乘车费用分析（平均每月' + formatCurrency(avgMonthlyCost) + '元）和' + formatDiscount(originalDiscount) + '的原卡折扣：<br><br>\
+                            <strong>推荐选择' + bestOption.card.name + '</strong><br>\
+                            • 平均每月花费：' + formatCurrency(bestOption.avgMonthlyCost) + '元<br>\
+                            • 相比不购卡每月节省：' + formatCurrency(bestOption.monthlySavings) + '元<br>\
+                            • <strong>每年可节省：' + formatCurrency(bestOption.annualSavings) + '元</strong>\
+                        ';
+                    } else if (bestOption.annualSavings < 0) {
+                        recommendationHTML = '\
+                            根据您' + monthsCount + '个月的乘车费用分析（平均每月' + formatCurrency(avgMonthlyCost) + '元）和' + formatDiscount(originalDiscount) + '的原卡折扣：<br><br>\
+                            <strong>' + bestOption.card.name + '是最佳购卡方案，但：</strong><br>\
+                            • 平均每月花费：' + formatCurrency(bestOption.avgMonthlyCost) + '元<br>\
+                            • 相比不购卡每月多花：' + formatCurrency(-bestOption.monthlySavings) + '元<br>\
+                            • <strong>每年会多花费：' + formatCurrency(-bestOption.annualSavings) + '元</strong><br><br>\
+                            所有购卡方案都不如不购卡划算，建议继续使用原卡。\
+                        ';
+                    } else {
+                        recommendationHTML = '\
+                            根据您' + monthsCount + '个月的乘车费用分析（平均每月' + formatCurrency(avgMonthlyCost) + '元）和' + formatDiscount(originalDiscount) + '的原卡折扣：<br><br>\
+                            <strong>' + bestOption.card.name + '与不购卡花费相同。</strong><br>\
+                            • 平均每月花费：' + formatCurrency(bestOption.avgMonthlyCost) + '元<br>\
+                            • 年度总花费：' + formatCurrency(bestOption.annualCost) + '元<br><br>\
+                            购卡与不购卡花费相同，可根据个人便利性选择。\
+                        ';
+                    }
+                    
+                    if (recommendationText) {
+                        recommendationText.innerHTML = recommendationHTML;
+                    }
+                }
+                
+                console.log("计算完成");
             }
             
             // 绑定计算按钮点击事件
             calculateBtn.addEventListener('click', calculateAndDisplay);
             
             // 为月份输入框添加删除按钮事件
-            monthsContainer.addEventListener('click', function(e) {
-                if (e.target.classList.contains('remove-month-btn')) {
-                    e.target.closest('.month-input-row').remove();
-                }
-            });
+            if (monthsContainer) {
+                monthsContainer.addEventListener('click', function(e) {
+                    if (e.target && e.target.classList.contains('remove-month-btn')) {
+                        var row = e.target.closest('.month-input-row');
+                        if (row) {
+                            row.remove();
+                        }
+                    }
+                });
+            }
             
             // 初始计算
-            calculateAndDisplay();
-        });
+            setTimeout(function() {
+                calculateAndDisplay();
+            }, 100);
+            
+            console.log("初始化完成");
+        };
     </script>
 </body>
 </html>
