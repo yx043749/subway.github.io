@@ -894,7 +894,16 @@
                 
                 // 添加购卡方案
                 for (var i = 0; i < cardResults.length; i++) {
-                    allOptions.push(cardResults[i]);
+                    allOptions.push({
+                        type: 'card',
+                        name: cardResults[i].card.name,
+                        card: cardResults[i].card,
+                        avgMonthlyCost: cardResults[i].avgMonthlyCost,
+                        annualCost: cardResults[i].annualCost,
+                        monthlySavings: cardResults[i].monthlySavings,
+                        annualSavings: cardResults[i].annualSavings,
+                        isBest: false
+                    });
                 }
                 
                 // 找出最划算的方案（月度费用最低）
@@ -1046,7 +1055,7 @@
                     } else if (bestOption.annualSavings > 0) {
                         recommendationHTML = '\
                             根据您' + monthsCount + '个月的乘车费用分析（平均每月' + formatCurrency(avgMonthlyCost) + '元）和' + formatDiscount(originalDiscount) + '的原卡折扣：<br><br>\
-                            <strong>推荐选择' + bestOption.card.name + '</strong><br>\
+                            <strong>推荐选择' + bestOption.name + '</strong><br>\
                             • 平均每月花费：' + formatCurrency(bestOption.avgMonthlyCost) + '元<br>\
                             • 相比不购卡每月节省：' + formatCurrency(bestOption.monthlySavings) + '元<br>\
                             • <strong>每年可节省：' + formatCurrency(bestOption.annualSavings) + '元</strong>\
@@ -1054,7 +1063,7 @@
                     } else if (bestOption.annualSavings < 0) {
                         recommendationHTML = '\
                             根据您' + monthsCount + '个月的乘车费用分析（平均每月' + formatCurrency(avgMonthlyCost) + '元）和' + formatDiscount(originalDiscount) + '的原卡折扣：<br><br>\
-                            <strong>' + bestOption.card.name + '是最佳购卡方案，但：</strong><br>\
+                            <strong>' + bestOption.name + '是最佳购卡方案，但：</strong><br>\
                             • 平均每月花费：' + formatCurrency(bestOption.avgMonthlyCost) + '元<br>\
                             • 相比不购卡每月多花：' + formatCurrency(-bestOption.monthlySavings) + '元<br>\
                             • <strong>每年会多花费：' + formatCurrency(-bestOption.annualSavings) + '元</strong><br><br>\
@@ -1063,7 +1072,7 @@
                     } else {
                         recommendationHTML = '\
                             根据您' + monthsCount + '个月的乘车费用分析（平均每月' + formatCurrency(avgMonthlyCost) + '元）和' + formatDiscount(originalDiscount) + '的原卡折扣：<br><br>\
-                            <strong>' + bestOption.card.name + '与不购卡花费相同。</strong><br>\
+                            <strong>' + bestOption.name + '与不购卡花费相同。</strong><br>\
                             • 平均每月花费：' + formatCurrency(bestOption.avgMonthlyCost) + '元<br>\
                             • 年度总花费：' + formatCurrency(bestOption.annualCost) + '元<br><br>\
                             购卡与不购卡花费相同，可根据个人便利性选择。\
